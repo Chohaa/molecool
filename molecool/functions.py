@@ -32,43 +32,52 @@ from mpl_toolkits.mplot3d import Axes3D
 
 #matplotlib notebook
 
+"""
+This module is for functions that perform measurements.
+"""
+
 def calculate_distance(rA, rB):
-    """
-    Calculate the distance between two points.
-    """
-    # This function calculates the distance between two points given as numpy arrays.
-    """
+    """Calculate the distance between two points.
+    
     Parameters
     ----------
     rA, rB : np.ndarray
-    The coordinates of each point.
-    """	
-    """
+        The coordinates of each point.
+    
     Returns
     -------
     distance : float
-    The distance between the two points.
-    """
-    d=(rA-rB)
-    dist=np.linalg.norm(d)
-   
-    return dist
- 
-    
+        The distance between the two points.
 
-def open_pdb(file_location):
-    # This function reads in a pdb file and returns the atom names and coordinates.
-    with open(file_location) as f:
-        data = f.readlines()
-    coordinates = []
-    symbols = []
-    for line in data:
-        if 'ATOM' in line[0:6] or 'HETATM' in line[0:6]:
-            symbols.append(line[76:79].strip())
-            atom_coords = [float(x) for x in line[30:55].split()]
-            coordinates.append(atom_coords)
-    coords = np.array(coordinates)
-    return symbols, coords
+    Examples
+    --------
+    >>> r1 = np.array([0, 0, 0])
+    >>> r2 = np.array([0, 0.1, 0])
+    >>> calculate_distance(r1, r2)
+    0.1
+    """
+    
+    dist_vec = rA - rB
+    distance = np.linalg.norm(dist_vec)
+
+    return distance
+ 
+def calculate_angle(rA, rB, rC, degrees=False):
+    # Calculate the angle between three points. Answer is given in radians by default, but can be given in degrees
+    # by setting degrees=True
+    AB = rB - rA
+    BC = rB - rC
+    theta=np.arccos(np.dot(AB, BC)/(np.linalg.norm(AB)*np.linalg.norm(BC)))
+
+    if degrees:
+        return np.degrees(theta)
+    else:
+        return theta
+
+
+"""
+Data used for the rest of the package.
+"""
 
 atomic_weights = {
     'H': 1.00784,
@@ -82,27 +91,23 @@ atomic_weights = {
 }
 
 
-def open_xyz(file_location):
-    
-    # Open an xyz file and return symbols and coordinates.
-    xyz_file = np.genfromtxt(fname=file_location, skip_header=2, dtype='unicode')
-    symbols = xyz_file[:,0]
-    coords = (xyz_file[:,1:])
-    coords = coords.astype(np.float)
-    return symbols, coords
+atom_colors = {
+    'H': 'white',
+    'C': '#D3D3D3',
+    'N': '#add8e6',
+    'O': 'red',
+    'P': '#FFA500',
+    'F': '#FFFFE0',
+    'Cl': '#98FB98',
+    'Br': '#F4A460',
+    'S': 'yellow'
+}
 
-def write_xyz(file_location, symbols, coordinates):
-    
-    # Write an xyz file given a file location, symbols, and coordinates.
-    num_atoms = len(symbols)
-    
-    with open(file_location, 'w+') as f:
-        f.write('{}\n'.format(num_atoms))
-        f.write('XYZ file\n')
-        
-        for i in range(num_atoms):
-            f.write('{}\t{}\t{}\t{}\n'.format(symbols[i], 
-                                              coordinates[i,0], coordinates[i,1], coordinates[i,2]))
+
+
+"""
+Functions for visualization of molecules
+"""
 
 def draw_molecule(coordinates, symbols, draw_bonds=None, save_location=None, dpi=300):
     
@@ -131,24 +136,6 @@ def draw_molecule(coordinates, symbols, draw_bonds=None, save_location=None, dpi
             ax.plot(coordinates[[atom1,atom2], 0], coordinates[[atom1,atom2], 1],
                     coordinates[[atom1,atom2], 2], color='k')
     
-    # Save figure
-    if save_location:
-        plt.savefig(save_location, dpi=dpi, graph_min=0, graph_max=2)
-    
-    return ax
-
-def calculate_angle(rA, rB, rC, degrees=False):
-    # Calculate the angle between three points. Answer is given in radians by default, but can be given in degrees
-    # by setting degrees=True
-    AB = rB - rA
-    BC = rB - rC
-    theta=np.arccos(np.dot(AB, BC)/(np.linalg.norm(AB)*np.linalg.norm(BC)))
-
-    if degrees:
-        return np.degrees(theta)
-    else:
-        return theta
-
 def bond_histogram(bond_list, save_location=None, dpi=300, graph_min=0, graph_max=2):
     # Draw a histogram of bond lengths based on a bond_list (output from build_bond_list function)
     
@@ -173,10 +160,36 @@ def bond_histogram(bond_list, save_location=None, dpi=300, graph_min=0, graph_ma
         plt.savefig(save_location, dpi=dpi)
     
     return ax
-        
+      
+
+"""
+Functions for molecule analysis
+"""
+
 def build_bond_list(coordinates, max_bond=1.5, min_bond=0):
-    
-    # Find the bonds in a molecule (set of coordinates) based on distance criteria.
+   """
+    Build a list of bonds in a set of coordinates based on a distance criteria.
+
+    Parameters
+    ----------
+    coordinates: np.ndarray
+        The coordinates of the atoms to analyze in an (natoms, ndim) array.
+
+    max_bond: float, optional
+        The maximum distance for two atoms to be considered bonded.
+
+    min_bond: float, optional
+        The minimum distance for two atoms to be considered bonded.
+
+    Returns
+    -------
+    bonds: dict
+        A dictionary containing bonded atoms with atom pairs as keys and the distance between the atoms as the value.
+    """
+
+    # Find the bonds in a molecule (set of 
+
+
     bonds = {}
     num_atoms = len(coordinates)
 
@@ -188,21 +201,52 @@ def build_bond_list(coordinates, max_bond=1.5, min_bond=0):
 
     return bonds
 
-atom_colors = {
-    'H': 'white',
-    'C': '#D3D3D3',
-    'N': '#add8e6',
-    'O': 'red',
-    'P': '#FFA500',
-    'F': '#FFFFE0',
-    'Cl': '#98FB98',
-    'Br': '#F4A460',
-    'S': 'yellow'
-}
+"""
+Functions for manipulating pdb files.
+"""
 
+def open_pdb(file_location):
+    # This function reads in a pdb file and returns the atom names and coordinates.
+    with open(file_location) as f:
+        data = f.readlines()
+    coordinates = []
+    symbols = []
+    for line in data:
+        if 'ATOM' in line[0:6] or 'HETATM' in line[0:6]:
+            symbols.append(line[76:79].strip())
+            atom_coords = [float(x) for x in line[30:55].split()]
+            coordinates.append(atom_coords)
+    coords = np.array(coordinates)
+    return symbols, coords
 
+"""
+functions for manipulating xyz files.
+"""
 
+def open_xyz(file_location):
+    
+    # Open an xyz file and return symbols and coordinates.
+    xyz_file = np.genfromtxt(fname=file_location, skip_header=2, dtype='unicode')
+    symbols = xyz_file[:,0]
+    coords = (xyz_file[:,1:])
+    coords = coords.astype(np.float)
+    return symbols, coords
+
+def write_xyz(file_location, symbols, coordinates):
+    
+    # Write an xyz file given a file location, symbols, and coordinates.
+    num_atoms = len(symbols)
+    
+    with open(file_location, 'w+') as f:
+        f.write('{}\n'.format(num_atoms))
+        f.write('XYZ file\n')
+        
+        for i in range(num_atoms):
+            f.write('{}\t{}\t{}\t{}\n'.format(symbols[i], 
+                                              coordinates[i,0], coordinates[i,1], coordinates[i,2]))
 
 if __name__ == "__main__":
     # Do something if this file is invoked on its own
     print(canvas())
+
+
