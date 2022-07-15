@@ -1,10 +1,12 @@
-
+import os
+import numpy as np
+import matplotlib.pyplot as plt
 """
 Functions for molecule analysis
 """
 
 def build_bond_list(coordinates, max_bond=1.5, min_bond=0):
-   """
+    """
     Build a list of bonds in a set of coordinates based on a distance criteria.
 
     Parameters
@@ -26,7 +28,6 @@ def build_bond_list(coordinates, max_bond=1.5, min_bond=0):
 
     # Find the bonds in a molecule (set of 
 
-
     bonds = {}
     num_atoms = len(coordinates)
 
@@ -35,6 +36,5 @@ def build_bond_list(coordinates, max_bond=1.5, min_bond=0):
             distance = calculate_distance(coordinates[atom1], coordinates[atom2])
             if distance > min_bond and distance < max_bond:
                 bonds[(atom1, atom2)] = distance
-
     return bonds
 

@@ -1,13 +1,6 @@
 """A Python package for analyzing and visualizing xyz files."""
 
 # Add imports here
-import numpy as np
-
-import matplotlib.pyplot as plt
-
-from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
-from .atom_data import atom_colors
-
 
 from .functions import *
 from .measure import calculate_distance, calculate_angle

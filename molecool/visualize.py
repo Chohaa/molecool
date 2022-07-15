@@ -1,4 +1,7 @@
-
+import numpy as np
+import matplotlib.pyplot as plt
+from .atom_data import atom_colors
+from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
 
 """
 Functions for visualization of molecules
