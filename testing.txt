@@ -1,11 +1,13 @@
 ***************************************
 This is the start of testing.txt
 ***************************************
-This is	the start of testing.txt
-***************************************
 
 I added this file from a new clone!
+<<<<<<< HEAD
+Now I added a new line!
+=======
 
 ***************************************
-This is	the end	of testing.txt
+This is the end of testing.txt
 ***************************************
+>>>>>>> 12651a37de10d61d9e9eea31c260c15b7ef3b5d4
