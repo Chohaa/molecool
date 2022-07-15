@@ -1,8 +1,5 @@
-I added this file from a new clone!
-
-I added this file from a new clone!
-This line doesn't add any value.
-
+***************************************
+This is the start of testing.txt
 ***************************************
 This is	the start of testing.txt
 ***************************************
