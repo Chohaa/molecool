@@ -7,6 +7,13 @@ molecool
 
 A Python package for analyzing and visualizing xyz files.
 
+This repository is currently under development. To do a development install, download this repository and type
+
+`pip install -e .`
+
+in the repository directory.
+
+
 ### Copyright
 
 Copyright (c) 2022, hanna
@@ -16,3 +23,5 @@ Copyright (c) 2022, hanna
  
 Project based on the 
 [Computational Molecular Science Python Cookiecutter](https://github.com/molssi/cookiecutter-cms) version 1.6.
+
+
