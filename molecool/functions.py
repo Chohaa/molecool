@@ -33,10 +33,28 @@ from mpl_toolkits.mplot3d import Axes3D
 #matplotlib notebook
 
 def calculate_distance(rA, rB):
+    """
+    Calculate the distance between two points.
+    """
     # This function calculates the distance between two points given as numpy arrays.
+    """
+    Parameters
+    ----------
+    rA, rB : np.ndarray
+    The coordinates of each point.
+    """	
+    """
+    Returns
+    -------
+    distance : float
+    The distance between the two points.
+    """
     d=(rA-rB)
     dist=np.linalg.norm(d)
+   
     return dist
+ 
+    
 
 def open_pdb(file_location):
     # This function reads in a pdb file and returns the atom names and coordinates.
